@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0a1024">
+<title>StrideGuard — Smart Shoe Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="#overview"><span class="logo">S<span>+</span></span><span><b>StrideGuard</b><small>INTELLIGENT FOOTWEAR</small></span></a>
+  <p class="nav-caption">MONITOR</p><nav>
+    <a class="nav-item active" href="#overview"><span>▦</span>Overview</a><a class="nav-item" href="#sensors"><span>⌁</span>Sensor telemetry</a><a class="nav-item" href="#location"><span>◎</span>GPS tracking</a><a class="nav-item" href="#alerts"><span>◷</span>Alert history</a>
+  </nav>
+  <div class="sidebar-spacer"></div>
+  <div class="device-mini"><span class="status-orb"></span><div><b id="sideDevice">Demo device</b><small id="sideConnection">Sample data active</small></div><span class="dots">•••</span></div>
+  <button class="nav-item settings-link" id="openSettings">⚙ <span>Device connection</span></button>
+  <div class="profile"><div class="profile-avatar">SG</div><div><b>Smart Shoe</b><small>ESP32 wearable</small></div><span class="profile-tag">DEVICE</span></div>
+</aside>
+<main class="main" id="overview">
+<header class="topbar"><button id="menuBtn" class="mobile-menu">☰</button><div><div class="kicker">SAFETY INTELLIGENCE <span> / </span> LIVE OVERVIEW</div><h1>Step into safety<span class="gradient-text">.</span></h1></div><div class="top-right"><div class="live-chip"><i></i><span id="modeLabel">DEMO LIVE</span></div><button class="round-btn" id="refreshBtn" title="Refresh">↻</button><button class="button-primary" id="topConnect">Connect device <span>↗</span></button></div></header>
+<section class="hero-strip"><div><div class="hero-label"><span class="sparkle">✳</span> YOUR PERSONAL SAFETY COMPANION</div><h2>Every step. <span>More secure.</span></h2><p>Real-time hazard awareness, motion intelligence and location support.</p></div><div class="hero-art"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="shoe-emoji">👟</div><div class="art-chip chip-one">⌁ <span>Motion AI</span></div><div class="art-chip chip-two">◎ <span>GPS active</span></div></div></section>
+<section class="stats-grid">
+ <article class="stat-card stat-safety"><div class="stat-heading">SAFETY STATUS <span class="stat-icon">✳</span></div><div class="stat-value" id="safetyValue">All clear</div><div class="stat-bottom"><i class="tiny-dot good"></i><span id="safetyMessage">No active hazards detected</span></div><div class="wave-line"></div></article>
+ <article class="stat-card"><div class="stat-heading">DEVICE CONNECTION <span class="stat-icon blue">⌁</span></div><div class="stat-value" id="deviceValue">Demo mode</div><div class="stat-bottom"><i class="tiny-dot good"></i><span id="deviceMessage">Waiting for ESP32</span></div><div class="stat-foot"><span>DEVICE ID</span><b id="deviceId">smart-shoe-01</b></div></article>
+ <article class="stat-card"><div class="stat-heading">ACTIVE ALERTS <span class="stat-icon orange">⚑</span></div><div class="stat-value" id="activeCount">0 <small>events</small></div><div class="stat-bottom"><i class="tiny-dot good"></i><span id="alertMessage">No urgent events</span></div><div class="stat-foot"><span>LAST EVENT</span><b id="lastEvent">None yet</b></div></article>
+ <article class="stat-card"><div class="stat-heading">BATTERY LEVEL <span class="stat-icon green">ϟ</span></div><div class="stat-value" id="batteryValue">— <small>%</small></div><div class="battery-track"><span id="batteryBar"></span></div><div class="stat-bottom"><span id="batteryMessage">Add battery measurement to firmware</span></div></article>
+</section>
+<section class="two-col" id="sensors">
+ <article class="panel"><div class="panel-header"><div><div class="kicker">HARDWARE TELEMETRY</div><h2>Sensor intelligence</h2></div><span class="pill"><i></i><span id="updateLabel">Sample data</span></span></div>
+ <div class="sensor-grid">
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon blue">↔</span><span class="sensor-status" id="obstacleStatus">NORMAL</span></div><p>Obstacle distance</p><div class="reading"><b id="distanceValue">84</b><span>cm</span></div><div class="progress"><i id="distanceBar" style="width:35%"></i></div><small>HC-SR04 · Front-facing</small></div>
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon teal">⌖</span><span class="sensor-status" id="dropStatus">NORMAL</span></div><p>Ground distance</p><div class="reading"><b id="groundValue">12.4</b><span>cm</span></div><div class="progress"><i id="groundBar" style="width:48%"></i></div><small>VL53L0X · Downward-facing</small></div>
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon orange">♨</span><span class="sensor-status" id="gasStatus">NORMAL</span></div><p>Gas / smoke level</p><div class="reading"><b id="gasValue">186</b><span>raw</span></div><div class="progress"><i id="gasBar" style="width:18%"></i></div><small>MQ-2 · Calibrated raw value</small></div>
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon purple">⌁</span><span class="sensor-status" id="motionStatus">STABLE</span></div><p>Motion / fall detection</p><div class="reading"><b id="motionValue">Stable</b></div><div class="progress"><i id="motionBar" style="width:20%"></i></div><small>MPU6050 + FSR 402</small></div>
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon cyan">◉</span><span class="sensor-status" id="pressureStatus">DETECTED</span></div><p>Foot pressure</p><div class="reading"><b id="pressureValue">68</b><span>%</span></div><div class="progress"><i id="pressureBar" style="width:68%"></i></div><small>FSR 402 · Heel / toe</small></div>
+  <div class="sensor-card"><div class="sensor-top"><span class="sensor-icon teal">≋</span><span class="sensor-status" id="moistureStatus">DRY</span></div><p>Surface moisture</p><div class="reading"><b id="moistureValue">18</b><span>%</span></div><div class="progress"><i id="moistureBar" style="width:18%"></i></div><small>Moisture sensor · Sole</small></div>
+ </div><div class="info-note">ⓘ <span>Demo readings are illustrative. Connect the ESP32 and calibrate thresholds before relying on alerts.</span></div></article>
+ <article class="panel response-panel"><div class="panel-header"><div><div class="kicker">ON-DEVICE FEEDBACK</div><h2>Response status</h2></div><span class="response-symbol">ϟ</span></div>
+  <div class="response-banner" id="responseBanner"><div class="response-check">✓</div><div><b id="responseTitle">All systems monitoring</b><p id="responseDescription">No active hazard in current readings.</p></div></div>
+  <div class="response-item"><span class="response-icon vib">≋</span><div><b>Vibration motor</b><small id="vibrationText">Standby · no pattern active</small></div><span class="state-tag" id="vibrationState">IDLE</span></div>
+  <div class="response-item"><span class="response-icon buzz">♫</span><div><b>Buzzer</b><small id="buzzerText">Standby · no sound requested</small></div><span class="state-tag" id="buzzerState">IDLE</span></div>
+  <div class="response-item"><span class="response-icon notify">◎</span><div><b>Caregiver alert</b><small id="caregiverText">Waiting for a hazard event</small></div><span class="state-tag" id="caregiverState">READY</span></div>
+  <div class="response-foot"><i class="tiny-dot good"></i> Feedback hardware is controlled by ESP32 firmware.</div>
+ </article>
+</section>
+<section class="two-col lower-grid">
+ <article class="panel map-panel" id="location"><div class="panel-header"><div><div class="kicker">LOCATION SERVICES</div><h2>Wearer location</h2></div><button class="text-link" id="centerMap">Center map ↗</button></div><div id="map"></div><div class="coordinates"><div><small>LATITUDE</small><b id="latitude">11.0168° N</b></div><div><small>LONGITUDE</small><b id="longitude">76.9558° E</b></div><div><small>LAST GPS FIX</small><b id="gpsFix">Demo position</b></div><button class="button-outline" id="openMaps">Open in Maps ↗</button></div><p class="map-note">The initial map pin is a demo location in Coimbatore, not a live GPS fix.</p></article>
+ <article class="panel" id="alerts"><div class="panel-header"><div><div class="kicker">EVENT MONITOR</div><h2>Recent alerts</h2></div><button class="text-link" id="clearAlerts">Clear history</button></div><div class="alert-list" id="alertList"><div class="empty-state"><span>◷</span><b>No alerts yet</b><small>Hazard events will appear here.</small></div></div><div class="alert-footer"><span id="eventTotal">0 events recorded</span><span class="history-live"><i></i> LIVE LOG</span></div></article>
+</section>
+<footer><span>STRIDEGUARD <i>●</i> ESP32 SMART SHOE</span><span>Safer steps through connected sensing</span></footer>
+</main>
+<div class="modal-shade" id="settingsModal" aria-hidden="true"><section class="modal"><button class="modal-x" id="closeModal">×</button><div class="kicker">DEVICE INTEGRATION</div><h2>Connect your smart shoe</h2><p>Use your backend telemetry endpoint. The ESP32 should send sensor readings to the backend; this page reads the latest data from the API.</p>
+<label for="modeSelect">Dashboard data mode</label><select id="modeSelect"><option value="demo">Demo mode — sample readings</option><option value="api">Live API — MongoDB-backed</option></select>
+<div id="apiFields" class="hidden"><label for="apiBase">API base URL</label><input id="apiBase" placeholder="http://localhost:3000" value=""><label for="deviceKey">Device API key (optional)</label><input id="deviceKey" type="password" placeholder="Same key configured in backend .env"><div class="schema"><b>POST /api/telemetry JSON example</b><pre>{"distanceCm":84,"groundDistanceCm":12.4,
+"gasRaw":186,"accelerationG":1.02,"fallDetected":false,
+"pressure":68,"moisture":18,"latitude":11.0168,
+"longitude":76.9558,"batteryPercent":82,"deviceOnline":true,
+"hazardFlags":{"obstacle":false,"dropOff":false,
+"gas":false,"wetFloor":false,"fall":false}}</pre></div></div>
+<div class="modal-actions"><button class="button-outline" id="cancelModal">Cancel</button><button class="button-primary" id="saveConnection">Save connection</button></div><p class="modal-message" id="modalMessage"></p></section></div>
+<div class="toast" id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="app.js"></script>
+</body></html>
