@@ -25,14 +25,30 @@ app.get("/api/latest", async (req, res) => {
 });
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
+
 const port = process.env.PORT || 3000;
+
 async function start() {
-  if (process.env.MONGO_URI) {
-    try { await mongoose.connect(process.env.MONGO_URI); console.log("MongoDB connected"); }
-    catch (err) { console.error("MongoDB connection failed:", err.message); }
-  } else {
-    console.warn("MONGO_URI is not set. API starts, but database-backed endpoints will fail.");
+  if (!process.env.MONGO_URI) {
+    console.error("MONGO_URI is missing from environment variables");
+    process.exit(1);
   }
-  app.listen(port, () => console.log(`StrideGuard running on http://localhost:${port}`));
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 15000
+    });
+
+    console.log("MongoDB connected successfully");
+
+    app.listen(port, () => {
+      console.log(`StrideGuard running on port ${port}`);
+    });
+  } catch (err) {
+    console.error("MongoDB connection failed:");
+    console.error(err);
+    process.exit(1);
+  }
 }
+
 start();
